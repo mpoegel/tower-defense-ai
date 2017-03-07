@@ -22,52 +22,33 @@ type GameInfo struct {
 }
 
 type Frame struct {
-	W  int `json:"w"`
-	H  int `json:"h"`
-	P1 struct {
-		Owner  int      `json:"owner"`
-		Income int      `json:"income"`
-		Bits   int      `json:"bits"`
-		Towers []string `json:"towers"`
-		Troops []struct {
-			Owner int `json:"owner"`
-			X     int `json:"x"`
-			Y     int `json:"y"`
-			Maxhp int `json:"maxhp"`
-			Hp    int `json:"hp"`
-			Enum  int `json:"enum"`
-		} `json:"troops"`
-		MainCore struct {
-			Owner int `json:"owner"`
-			X     int `json:"x"`
-			Y     int `json:"y"`
-			Maxhp int `json:"maxhp"`
-			Hp    int `json:"hp"`
-			Enum  int `json:"enum"`
-		} `json:"mainCore"`
-	} `json:"p1"`
-	P2 struct {
-		Owner  int      `json:"owner"`
-		Income int      `json:"income"`
-		Bits   int      `json:"bits"`
-		Towers []string `json:"towers"`
-		Troops []struct {
-			Owner int `json:"owner"`
-			X     int `json:"x"`
-			Y     int `json:"y"`
-			Maxhp int `json:"maxhp"`
-			Hp    int `json:"hp"`
-			Enum  int `json:"enum"`
-		} `json:"troops"`
-		MainCore struct {
-			Owner int `json:"owner"`
-			X     int `json:"x"`
-			Y     int `json:"y"`
-			Maxhp int `json:"maxhp"`
-			Hp    int `json:"hp"`
-			Enum  int `json:"enum"`
-		} `json:"mainCore"`
-	} `json:"p2"`
+	W  int        `json:"w"`
+	H  int        `json:"h"`
+	P1 PlayerData `json:"p1"`
+	P2 PlayerData `json:"p2"`
+}
+
+type PlayerData struct {
+	Owner  int      `json:"owner"`
+	Income int      `json:"income"`
+	Bits   int      `json:"bits"`
+	Towers []string `json:"towers"`
+	Troops []struct {
+		Owner int `json:"owner"`
+		X     int `json:"x"`
+		Y     int `json:"y"`
+		Maxhp int `json:"maxhp"`
+		Hp    int `json:"hp"`
+		Enum  int `json:"enum"`
+	} `json:"troops"`
+	MainCore struct {
+		Owner int `json:"owner"`
+		X     int `json:"x"`
+		Y     int `json:"y"`
+		Maxhp int `json:"maxhp"`
+		Hp    int `json:"hp"`
+		Enum  int `json:"enum"`
+	} `json:"mainCore"`
 }
 
 type Player struct {
@@ -101,7 +82,7 @@ func NewPlayer(credentialFile *string) *Player {
 	return p
 }
 
-func StartGame(player *Player, strat Strategy) {
+func StartGame(player *Player, strat *Strategy) {
 	// Open a new web socket
 	var dialer *websocket.Dialer
 	conn, _, err := dialer.Dial("ws://localhost:8080/wsplay", nil)
@@ -136,7 +117,7 @@ func StartGame(player *Player, strat Strategy) {
 			fmt.Println("Player 1 Wins!")
 			return
 		}
-		action := strat.Execute(frame, gameInfo.Player)
+		action := (*strat).Execute(frame, gameInfo.Player)
 		log.Println(action)
 		conn.WriteMessage(1, []byte(action))
 	}
