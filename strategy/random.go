@@ -41,9 +41,9 @@ func (strat *RandomStrategy) Execute(frame *tdef.Frame, player int) string {
 		enum := (strat.rr.Int() % 10) + 50
 		var plot int
 		if player == 1 {
-			plot = Choice(strat.rr, []int{0, 22, 44}) + strat.rr.Int()%10
+			plot = choice(strat.rr, []int{0, 22, 44}) + strat.rr.Int()%10
 		} else {
-			plot = Choice(strat.rr, []int{11, 33, 56}) + strat.rr.Int()%10
+			plot = choice(strat.rr, []int{11, 33, 56}) + strat.rr.Int()%10
 		}
 		if plot < 10 {
 			action = fmt.Sprintf("b%d 0%d", enum, plot)
@@ -64,10 +64,4 @@ func (strat *RandomStrategy) Execute(frame *tdef.Frame, player int) string {
 	}
 	strat.count++
 	return action
-}
-
-func Choice(r *rand.Rand, arr []int) int {
-	n := len(arr)
-	i := r.Int() % n
-	return arr[i]
 }

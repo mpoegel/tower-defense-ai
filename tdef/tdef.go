@@ -11,6 +11,7 @@ import (
 )
 
 type Strategy interface {
+	Init(int)
 	Name() string
 	Execute(*Frame, int) string
 }
