@@ -10,10 +10,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Action represents a series of actions or moves
+type Action []string
+
 type Strategy interface {
 	Init(int)
 	Name() string
 	Execute(*Frame, int) string
+	Save()
 }
 
 type GameInfo struct {
@@ -30,10 +34,17 @@ type Frame struct {
 }
 
 type PlayerData struct {
-	Owner  int      `json:"owner"`
-	Income int      `json:"income"`
-	Bits   int      `json:"bits"`
-	Towers []string `json:"towers"`
+	Owner  int `json:"owner"`
+	Income int `json:"income"`
+	Bits   int `json:"bits"`
+	Towers []struct {
+		Owner int `json:"owner"`
+		X     int `json:"x"`
+		Y     int `json:"y"`
+		Maxhp int `json:"maxhp"`
+		Hp    int `json:"hp"`
+		Enum  int `json:"enum"`
+	} `json:"towers"`
 	Troops []struct {
 		Owner int `json:"owner"`
 		X     int `json:"x"`
@@ -101,7 +112,7 @@ func StartGame(player *Player, strat *Strategy) {
 	json.Unmarshal(msg, gameInfo)
 	log.Printf("Match Found. Player: %d, Username: %s, GameName: %s\n", gameInfo.Player,
 		gameInfo.Username, gameInfo.GameName)
-
+	(*strat).Init(gameInfo.Player)
 	//send game inputs
 	frame := &Frame{}
 	for {
@@ -112,16 +123,17 @@ func StartGame(player *Player, strat *Strategy) {
 		fmt.Printf("%d, %d\n", frame.P1.MainCore.Hp, frame.P2.MainCore.Hp)
 		if frame.P1.MainCore.Hp <= 0 {
 			fmt.Println("Player 2 Wins!")
-			return
+			break
 		}
 		if frame.P2.MainCore.Hp <= 0 {
 			fmt.Println("Player 1 Wins!")
-			return
+			break
 		}
 		action := (*strat).Execute(frame, gameInfo.Player)
 		log.Println(action)
 		conn.WriteMessage(1, []byte(action))
 	}
+	(*strat).Save()
 }
 
 func handleError(err error) {

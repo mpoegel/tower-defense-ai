@@ -21,6 +21,10 @@ func (strat *AttackStrategy) Name() string {
 	return "Attack Strategy"
 }
 
+func (strat *AttackStrategy) Init(player int) {
+	return
+}
+
 func (strat *AttackStrategy) Execute(frame *tdef.Frame, player int) string {
 	var lane int
 	if strat.lane == -1 {
@@ -30,4 +34,8 @@ func (strat *AttackStrategy) Execute(frame *tdef.Frame, player int) string {
 	}
 	action := fmt.Sprintf("b01 0%d", lane)
 	return action
+}
+
+func (strat *AttackStrategy) Save() {
+	return
 }

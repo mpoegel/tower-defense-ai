@@ -6,6 +6,20 @@ import (
 	"github.com/mpoegel/tower-defense-ai/tdef"
 )
 
+func getAffordableActions(bits int) []int {
+	var actions []int
+	troops := getAffordableTroops(bits)
+	for _, troop := range troops {
+		actions = append(actions, troop.Enum)
+	}
+	towers := getAffordableTowers(bits)
+	offset := len(tdef.AllTroops)
+	for _, tower := range towers {
+		actions = append(actions, offset+tower.Enum)
+	}
+	return actions
+}
+
 func getAffordableTowers(bits int) []*tdef.Tower {
 	var towers []*tdef.Tower
 	for _, tower := range tdef.AllTowers {

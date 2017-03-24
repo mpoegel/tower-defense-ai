@@ -19,6 +19,8 @@ func parseStrategy(input *string) (*tdef.Strategy, error) {
 		strat = strategy.NewNullStrategy()
 	} else if *input == "random" {
 		strat = strategy.NewRandomStrategy(time.Now().Unix())
+	} else if *input == "alpha" {
+		strat = strategy.NewAlphaStrategy(time.Now().Unix(), 0.8, 0.1, 0.2)
 	} else {
 		err := errors.New("Unrecognized strategy: " + *input)
 		return nil, err

@@ -24,6 +24,10 @@ func (strat *RandomStrategy) Name() string {
 	return "Random Strategy"
 }
 
+func (strat *RandomStrategy) Init(player int) {
+	return
+}
+
 func (strat *RandomStrategy) Execute(frame *tdef.Frame, player int) string {
 	// choose an action at random
 	// one of every 5 actions will be a random tower placement
@@ -64,4 +68,8 @@ func (strat *RandomStrategy) Execute(frame *tdef.Frame, player int) string {
 	}
 	strat.count++
 	return action
+}
+
+func (strat *RandomStrategy) Save() {
+	return
 }
